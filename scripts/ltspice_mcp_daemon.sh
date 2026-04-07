@@ -13,6 +13,8 @@ LATEST_LOG_LINK="${LOG_DIR}/latest.log"
 HOST="${LTSPICE_MCP_DAEMON_HOST:-127.0.0.1}"
 PORT="${LTSPICE_MCP_DAEMON_PORT:-8765}"
 HTTP_PATH="${LTSPICE_MCP_DAEMON_HTTP_PATH:-/mcp}"
+SSL_KEYFILE="${LTSPICE_MCP_DAEMON_SSL_KEYFILE:-/Users/manlycode/localhost-key.pem}"
+SSL_CERTFILE="${LTSPICE_MCP_DAEMON_SSL_CERTFILE:-/Users/manlycode/localhost.pem}"
 WORKDIR="${LTSPICE_MCP_DAEMON_WORKDIR:-${DEFAULT_WORKDIR}}"
 TIMEOUT="${LTSPICE_MCP_DAEMON_TIMEOUT:-180}"
 LTSPICE_BINARY="${LTSPICE_MCP_DAEMON_LTSPICE_BINARY:-/Applications/LTspice.app/Contents/MacOS/LTspice}"
@@ -193,13 +195,16 @@ start_daemon() {
     local launch_prefix=()
     # Fully detach from the caller session so agent-triggered restarts do not drop the daemon.
     if command -v setsid >/dev/null 2>&1; then
+      echo "there was a launch prefix"
       launch_prefix=(setsid)
     fi
-    nohup "${launch_prefix[@]}" "${UV_BIN}" run --project "${PROJECT_ROOT}" ltspice-mcp \
+    nohup "${UV_BIN}" run --project "${PROJECT_ROOT}" ltspice-mcp \
       --daemon-http \
       --host "${HOST}" \
       --port "${PORT}" \
       --http-path "${HTTP_PATH}" \
+      --ssl-keyfile "${SSL_KEYFILE}" \
+      --ssl-certfile "${SSL_CERTFILE}" \
       --workdir "${WORKDIR}" \
       --timeout "${TIMEOUT}" \
       --ltspice-binary "${LTSPICE_BINARY}" \

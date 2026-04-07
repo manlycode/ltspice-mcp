@@ -10524,6 +10524,8 @@ def _run_streamable_http_with_uvicorn(
     port: int,
     log_level: str,
     streamable_http_path: str,
+    ssl_keyfile: str | None = None,
+    ssl_certfile: str | None = None,
 ) -> None:
     import anyio
     import uvicorn
@@ -10538,6 +10540,8 @@ def _run_streamable_http_with_uvicorn(
             port=port,
             log_level=log_level.lower(),
             timeout_graceful_shutdown=5,
+            ssl_keyfile=ssl_keyfile,
+            ssl_certfile=ssl_certfile,
         )
         server = uvicorn.Server(config)
         await server.serve()
@@ -10623,6 +10627,16 @@ def main() -> None:
         type=int,
         default=int(os.getenv("LTSPICE_MCP_PORT", "8000")),
         help="Bind port for HTTP transports (sse/streamable-http).",
+    )
+    parser.add_argument(
+        "--ssl-keyfile",
+        default=os.getenv("LTSPICE_MCP_SSL_KEYFILE"),
+        help="Path to SSL key file for HTTPS.",
+    )
+    parser.add_argument(
+        "--ssl-certfile",
+        default=os.getenv("LTSPICE_MCP_SSL_CERTFILE"),
+        help="Path to SSL certificate file for HTTPS.",
     )
     parser.add_argument(
         "--mount-path",
@@ -10747,6 +10761,8 @@ def main() -> None:
             port=args.port,
             log_level=configured_log_level,
             streamable_http_path=streamable_http_path,
+            ssl_keyfile=args.ssl_keyfile,
+            ssl_certfile=args.ssl_certfile,
         )
         return
     mcp.run(transport=transport)
