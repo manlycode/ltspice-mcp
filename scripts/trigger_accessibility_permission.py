@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -11,7 +12,7 @@ from typing import Any
 
 import anyio
 from mcp.client.session import ClientSession
-from mcp.client.stdio import StdioServerParameters, stdio_client
+from mcp.client.stdio import StdioServerParameters, get_default_environment, stdio_client
 
 _DENIED_MARKERS = (
     "assistive access",
@@ -74,9 +75,16 @@ async def _run(args: argparse.Namespace) -> int:
     if command_args and command_args[0] == "--":
         command_args = command_args[1:]
 
+    env = get_default_environment()
+    node_options = os.environ.get("NODE_OPTIONS", "")
+    if "--use-system-ca" not in node_options:
+        node_options = f"{node_options} --use-system-ca".strip()
+    env["NODE_OPTIONS"] = node_options
+
     server_params = StdioServerParameters(
         command=command,
         args=[*command_args, args.url],
+        env=env,
     )
 
     try:

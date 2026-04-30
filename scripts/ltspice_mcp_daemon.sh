@@ -10,7 +10,7 @@ LOG_DIR="${DAEMON_DIR}/logs"
 PID_FILE="${DAEMON_DIR}/ltspice-mcp-daemon.pid"
 LATEST_LOG_LINK="${LOG_DIR}/latest.log"
 
-HOST="${LTSPICE_MCP_DAEMON_HOST:-127.0.0.1}"
+HOST="${LTSPICE_MCP_DAEMON_HOST:-localhost}"
 PORT="${LTSPICE_MCP_DAEMON_PORT:-8765}"
 HTTP_PATH="${LTSPICE_MCP_DAEMON_HTTP_PATH:-/mcp}"
 SSL_KEYFILE="${LTSPICE_MCP_DAEMON_SSL_KEYFILE:-/Users/manlycode/localhost-key.pem}"
@@ -65,7 +65,7 @@ EOF
 }
 
 url() {
-  echo "http://${HOST}:${PORT}${HTTP_PATH}"
+  echo "https://${HOST}:${PORT}${HTTP_PATH}"
 }
 
 pid_from_file() {
