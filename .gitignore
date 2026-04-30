@@ -16,3 +16,5 @@ runs/
 .ltspice_mcp_runs.json
 .mcp-workdir/
 images/
+localhost-key.pem
+localhost.pem
